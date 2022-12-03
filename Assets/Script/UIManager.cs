@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.Windows;
 
 public class UIManager : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] public Text Player_Potion;
     [SerializeField] public Text Player_Attack;
 
+    private string playerName = null;
+
     [SerializeField] public Slider Player_Staminar;
     [SerializeField] public Slider Player_Exp;
     [SerializeField] public Image[] Player_HP;
@@ -40,8 +43,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] Text MonsterInfo;
 
     [Header("[INPUT UI]")]
-    [SerializeField] GameObject objInputName = null; // 이름 입력 UI
-    [SerializeField] Text inputName = null; // 입력받은 이름
+    [SerializeField] GameObject objInputName; // 이름 입력 UI
+    [SerializeField] Text inputName; // 입력받은 이름
 
     [Header("[GENERAL UI]")]
     [SerializeField] Button StartButton;
@@ -102,6 +105,7 @@ public class UIManager : MonoBehaviour
         EXITCANVAS.gameObject.SetActive(false);
         LOGINCANVAS.gameObject.SetActive(false);
         //TimeManager timeManager=FindObjectOfType<TimeManager>();
+
     }
 
     public void StaminarCheck()
@@ -122,6 +126,7 @@ public class UIManager : MonoBehaviour
     public void Start()
     {
         TITLESCENE();
+        //playerName = inputName.GetComponent<InputField>().text;
     }
 
     public void Update()
@@ -143,6 +148,8 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
+
+
     }
 
 
@@ -158,8 +165,26 @@ public class UIManager : MonoBehaviour
         WINCANVAS.gameObject.SetActive(false);
         LOGINCANVAS.gameObject.SetActive(false);
         Player_Staminar.gameObject.SetActive(false);
-        Player_ID = inputName;
+        //Player_ID.text = inputName.text.ToString();
+
+        playerName = inputName.GetComponent<InputField>().text;
+
+        if (playerName.Length >= 2 && playerName.Length <= 8) //&& UnityEngine.Input.GetKeyDown(KeyCode.Return)
+        {
+            PlayerInputName();
+        }
+        else if (playerName.Length < 2 && playerName.Length > 8)
+        {
+            Debug.Log("ID는 최소 2자리에서 8자리까지 가능합니다.");
+        }
     }
+    void PlayerInputName()
+    {
+        playerName = inputName.text.ToString();
+        PlayerPrefs.SetString("CurrentPlayerName", playerName);
+        Player_ID.text = playerName;
+    }
+
 
 
     public void ACTIONSCENE()
@@ -242,14 +267,26 @@ public class UIManager : MonoBehaviour
         return who;
     }
 
+    //
+    // LOGIN SCENE
+    #region LOGIN SCENE & INPUT PLAYER NAME
     public void ONLOGINSCENE()
     {
         LOGINCANVAS.gameObject.SetActive(true);
+
     }
+
     public void OFFLOGINSCENE()
     {
         LOGINCANVAS.gameObject.SetActive(false);
+
     }
+    #endregion
+
+
+    //
+    // EXIT SCENE
+    #region EXIT SCENE
     public void ONEXITSCENE()
     {
         EXITCANVAS.gameObject.SetActive(true);
@@ -262,7 +299,8 @@ public class UIManager : MonoBehaviour
     #endregion
     // 
 
-
+    #endregion
+    //
 
     private void ValueChanged(Slider slider)
     {
