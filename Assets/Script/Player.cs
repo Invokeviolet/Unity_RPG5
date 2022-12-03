@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor.U2D.Path.GUIFramework;
 
 
 public class Player : MonoBehaviour
@@ -17,6 +18,10 @@ public class Player : MonoBehaviour
             if (Instance == null)
             {
                 Instance = FindObjectOfType<Player>();
+                if (Instance == null)
+                {
+                    Instance = new GameObject("Player").AddComponent<Player>();
+                }
             }
             DontDestroyOnLoad(Instance.gameObject);
             return Instance;
@@ -31,7 +36,8 @@ public class Player : MonoBehaviour
     Vector3 pos;
     float PlayerPosX;
     float PlayerPosZ;
-    bool IsDead { get; set; }
+
+    public bool IsDead { get; set; }
 
 
     // 플레이어 정보 
@@ -40,11 +46,14 @@ public class Player : MonoBehaviour
     private int PLAYERMAXHP = 100;
     private int PLAYERCUREXP = 0;
     private int PLAYERMAXEXP = 1000;
-    private int PLAYERATTACKPOWER = 1;
+    public int PLAYERATTACKPOWER = 1;
     private int PLAYERATTACKRANGE = 1;
     private int POTION = 0;
     private int GOLD = 0;
-    public bool Unavailable = false;
+    public float CURSTAMINAR = 0;
+    public float MAXSTAMINAR = 0.5f;
+    
+    public bool Shop4BuyAvailable = true;
 
     private void Awake()
     {
@@ -58,13 +67,12 @@ public class Player : MonoBehaviour
         SCENEMANAGER = new ChangeSceneManager();
 
         PLAYERLEVEL = 1;
-        PLAYERCURHP = PLAYERMAXHP;
+        PLAYERCURHP = 1/PLAYERMAXHP;
         PLAYERATTACKPOWER = 1;
         PLAYERATTACKRANGE = 1;
         PLAYERCUREXP = 0;
         POTION = 1;
         GOLD = 100;
-
     }
 
     //
@@ -131,7 +139,7 @@ public class Player : MonoBehaviour
         if (GOLD <= 0)
         {
             GOLD = 0;
-            Unavailable = true;
+            Shop4BuyAvailable = false;
         }
         return GOLD;
     }
@@ -171,36 +179,56 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        MyLV = "LV" + PLAYERLEVEL.ToString() ;
+        MyLV = "LV ." + PLAYERLEVEL.ToString() ;
         // MyID = ;
-        MyGold = "Gold " + GOLD.ToString();
-        MyPotion = "Potion " + POTION.ToString();
-        MyAttack = "Attack Power / Attack Range " + PLAYERATTACKPOWER.ToString();
+        MyGold = GOLD.ToString();
+        MyPotion = POTION.ToString();
+        MyAttack = PLAYERATTACKPOWER.ToString() + " / " + PLAYERATTACKRANGE.ToString();
         // 슬라이더로 변경 필요 
-        MyHP = "HP / MAXHP . " + PLAYERCURHP.ToString() + " / " + PLAYERMAXHP.ToString() + " / " + PLAYERATTACKRANGE.ToString();
-        MyEXP = "EXP / MAXEXP " + PLAYERCUREXP.ToString() + PLAYERMAXEXP.ToString();
+        MyHP = PLAYERCURHP.ToString() + " / " + PLAYERMAXHP.ToString();
+        MyEXP = PLAYERCUREXP.ToString() + PLAYERMAXEXP.ToString();
 
+        // 인게임 씬에서만 이동이 가능함.
+        if (GameManager.INSTANCE.myPlayerInGame == true)
+        {
+            PlayerMove();           
+        }
+        else 
+        {
+            PlayerAction();            
+        }
+        PlayerCharge();
+        UpdatePlayerInfo();
 
-        if (isBattle == true)
-        {
-            PlayerAction();
-            UpdatePlayerInfo();
-        }
-        else
-        {
-            PlayerMove();
-            PlayerCharge();
-            UpdatePlayerInfo();
-        }
     }
 
     private void UpdatePlayerInfo()
     {
         // 플레이어 정보 업데이트 시점 - 전투씬 전,후
-        UIManager.INSTANCE.GETPLAYERINFO(myInfo);
+        UIManager.INSTANCE.GETPLAYERINFO(MyLV, MyGold, MyPotion, MyAttack,MyID);
     }
-   
 
+
+
+    //
+    // 플레이어 경험치 및 레벨업
+    #region 플레이어 경험치 및 레벨업
+    public void ExpUpdate(int exp) 
+    {
+        UIManager.INSTANCE.Player_Exp.value += exp;
+        if (PLAYERCUREXP >= PLAYERMAXEXP) 
+        {
+            // 경험치가 최대일 때 레벨업
+            PLAYERLEVEL++;
+        }
+    }
+    #endregion
+    //
+
+
+    //
+    // 플레이어 이동
+    #region 플레이어 이동
     void PlayerMove()
     {
         // WASD 키로 이동
@@ -238,20 +266,34 @@ public class Player : MonoBehaviour
         }
 
     }
+    #endregion
+    //
 
+
+
+    //
+    // 플레이어 공격
+    #region 플레이어 공격
     void PlayerAction()
     {
         if (Input.GetKeyDown((KeyCode.Space))) // 공격
         {
             GameManager.INSTANCE.GetMonster().HitMonster(10);
+            UIManager.INSTANCE.StaminarCheck();
+            // 스태미너로 공격 횟수에 제한을 둘 필요가 있음
             //attackCount++;
-        }
-        
+        }        
     }
+    #endregion
+    //
+
+
+    // 플레이어 체력
+    #region
     void PlayerCharge() 
     {
         int curPotion = POTION;
-        if (Input.GetKeyDown((KeyCode.I))) // 물약 사용
+        if (Input.GetKeyDown((KeyCode.I)))
         {
             POTION -= 1;
             PLAYERCURHP += 10;
@@ -267,8 +309,14 @@ public class Player : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    // 인게임 씬에서 정보 출력
+
+
+    //
+    // 플레이어 위치 정보 출력
+    #region 플레이어 위치 정보 출력
+
     private void OnCollisionEnter(Collision collision)
     {
         // 맵에 있는 맵큐브랑 충돌하면 맵 정보 출력
@@ -279,28 +327,58 @@ public class Player : MonoBehaviour
         }
         if (collision.collider.CompareTag("Store"))
         {
-            SCENEMANAGER.STORESCENE(); // 상점 씬으로 이동
+            // 상점으로 이동할건지 물어보는 창 띄우기
+            // OK 누르면 상점 으로 이동
+            UIManager.INSTANCE.QUESTION();
+
             // 골드, 물약 정보 출력
-            //UIManager.INSTANCE.BUYPOTION(POTION, GOLD);
+            // UIManager.INSTANCE.BUYPOTION(POTION, GOLD);
         }
         if (collision.collider.CompareTag("End"))
         {
-            SCENEMANAGER.BOSSSCENE(); // 보스 전투 씬으로 이동
-            // UIManager.INSTANCE.GETMOBINFO(); // 무조건 보스 정보 출력 / 보스프리팹을 따로 받아서 몬스터 스크립트 정보를 넣어주는 방법
+            SCENEMANAGER.NPCSCENE();            
         }
+        
     }
 
     private void OnTriggerEnter(Collider collider)
-    {
-        // 맵에 있는 몬스터랑 충돌하면 몬스터 정보 출력
+    {        
         if (collider.gameObject.TryGetComponent<Monster>(out monster) == true) //(collision.collider.CompareTag("Monster"))
         {
-            Debug.Log(monster.MOBINFO);
-            SCENEMANAGER.ACTIONSCENE(); // 액션 씬으로 이동                        
+            // Debug.Log(monster.MOBINFO);
+            // 충돌한 몬스터 객체의 난이도에 따라 몬스터의 프리팹을 다르게 생성
+            // 충돌한 맵에 따라 넘어가는 씬을 다르게 생성            
+            SCENEMANAGER.ACTIONFORESTSCENE();
+            
             UIManager.INSTANCE.GETMOBINFO(collider.gameObject); // UI에 몬스터 정보 출력
         }
         
     }
+
+    #endregion
+    //
+
+
+    //
+    // 플레이어 타격 및 죽음
+    #region 플레이어 타격 및 죽음
+    public void HitPlayer(int damage)
+    {
+        PLAYERCURHP -= damage;
+        if (PLAYERCURHP <= 0)
+        {
+            IMDEAD();
+        }
+    }
+    public void IMDEAD()
+    {
+        IsDead = true;
+        UIManager.INSTANCE.Check4WhoIsWin(true);
+        // 1 초 뒤 플레이어 졌다는 창 띄우기
+        Invoke("UIManager.INSTANCE.RESULTSCENE()", 1f);
+
+    }
+    #endregion
 
     // 공격 받으면 HP 감소, 물약 아이템 사용시 HP 증가
 

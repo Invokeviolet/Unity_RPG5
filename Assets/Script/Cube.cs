@@ -45,7 +45,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Forest;
             //MAPCOLOR = Color.green;
-            MAPNAME = "숲";
+            MAPNAME = "FOREST";
             MAPNUM = 0;
             this.gameObject.tag = "Forest";
         }
@@ -53,7 +53,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Swamp;
             //MAPCOLOR = Color.blue;
-            MAPNAME = "늪";
+            MAPNAME = "SWAMP";
             MAPNUM = 1;
             this.gameObject.tag = "Swamp";
         }
@@ -61,7 +61,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Ground;
             //MAPCOLOR = Color.yellow;
-            MAPNAME = "평지";
+            MAPNAME = "GROUND";
             MAPNUM = 2;
             this.gameObject.tag = "Ground";
         }
@@ -69,7 +69,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Shop;
             //MAPCOLOR = Color.black;
-            MAPNAME = "상점";
+            MAPNAME = "STORE";
             MAPNUM = 3;
             this.gameObject.tag = "Store";
             // 상점일 때 물약 구매
@@ -78,7 +78,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Start;
             //MAPCOLOR = Color.white;
-            MAPNAME = "출발";
+            MAPNAME = "START";
             MAPNUM = 4;
             this.gameObject.tag = "Start";
         }
@@ -86,7 +86,7 @@ public class Cube : MonoBehaviour
         {
             MAPMESH.material = Final;
             //MAPCOLOR = Color.white;
-            MAPNAME = "도착";
+            MAPNAME = "ARRIVAL";
             MAPNUM = 5;
             this.gameObject.tag = "End";
         }

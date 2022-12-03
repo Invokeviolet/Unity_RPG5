@@ -8,37 +8,56 @@ using System;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] GameObject TimePrefab; // 타이머 UI
-    [SerializeField] public TextMeshProUGUI TimeText; // 타이머 텍스트
-
+    [Header("[CANVAS]")]
     [SerializeField] Canvas TITLECANVAS;
     [SerializeField] Canvas GENERALCANVAS;
     [SerializeField] Canvas LOGINCANVAS;
+    [SerializeField] Canvas QUESTIONCANVAS;
     [SerializeField] Canvas STORECANVAS;
     [SerializeField] Canvas GAMECLEARCANVAS;
     [SerializeField] Canvas GAMEOVERCANVAS;
+    [SerializeField] Canvas WINCANVAS;
+    [SerializeField] Canvas EXITCANVAS;
 
-    [Header("플레이어 정보")]
-    [SerializeField] public TextMeshProUGUI Player_Lv;
-    [SerializeField] public TextMeshProUGUI Player_ID;
-    [SerializeField] public TextMeshProUGUI Player_Gold;
-    [SerializeField] public TextMeshProUGUI Player_Potion;
-    [SerializeField] public TextMeshProUGUI Player_Attack;
+    [Header("[PLAYER INFO]")]
+    [SerializeField] public Text Player_Lv;
+    [SerializeField] public Text Player_ID;
+    [SerializeField] public Text Player_Gold;
+    [SerializeField] public Text Player_Potion;
+    [SerializeField] public Text Player_Attack;
 
-    [SerializeField] Slider Player_Exp;
-    [SerializeField] Slider Player_HP;
+    [SerializeField] public Slider Player_Staminar;
+    [SerializeField] public Slider Player_Exp;
+    [SerializeField] public Image[] Player_HP;
+
+
+    [Header("[MAP UI]")]
+    [SerializeField] GameObject MapInfoPrefab;
+    [SerializeField] Text MapInfo;
+
+    [Header("[MONSTER UI]")]
+    [SerializeField] GameObject MonsterInfoPrefab;
+    [SerializeField] Text MonsterInfo;
 
     [Header("[INPUT UI]")]
     [SerializeField] GameObject objInputName = null; // 이름 입력 UI
-    [SerializeField] TMP_InputField inputName = null; // 입력받은 이름
-    
-    [SerializeField] TextMeshProUGUI MapInfo;
-    [SerializeField] TextMeshProUGUI MonsterInfo;
+    [SerializeField] Text inputName = null; // 입력받은 이름
 
-    [SerializeField] Button ReturnButton; // 나중에 삭제
-    [SerializeField] Button BuyButton;
+    [Header("[GENERAL UI]")]
     [SerializeField] Button StartButton;
+    [SerializeField] Button ExitButton;
+    [SerializeField] Button QuitButton;
+    [SerializeField] Button QuitCancleButton;
 
+    [Header("[STORE UI]")]
+    [SerializeField] Button BackButton;
+    [SerializeField] Button BuyButton;
+    [SerializeField] Text StorePotionValue;
+    [SerializeField] Text StoreGoldValue;
+
+
+    [Header("[WIN UI]")]
+    [SerializeField] Button ReturnButton;
 
     // 싱글톤
     #region 싱글톤
@@ -51,6 +70,10 @@ public class UIManager : MonoBehaviour
             if (Instance == null)
             {
                 Instance = FindObjectOfType<UIManager>();
+                /* if (Instance == null)
+                 {
+                     Instance = new GameObject("UIManager").AddComponent<UIManager>();
+                 }*/
             }
             DontDestroyOnLoad(Instance.gameObject);
             return Instance;
@@ -59,42 +82,71 @@ public class UIManager : MonoBehaviour
     #endregion
 
     Action action;
-        
+
     private void Awake()
     {
         action += BUYPOTION;
         BuyButton.onClick.AddListener(delegate () { action(); });
 
+        Player.INSTANCE.CURSTAMINAR = Player.INSTANCE.MAXSTAMINAR;
+        Player_Staminar.value = Player.INSTANCE.CURSTAMINAR;
+        Player_Staminar.gameObject.SetActive(false);
+
         TITLECANVAS.gameObject.SetActive(false);
         GENERALCANVAS.gameObject.SetActive(false);
         STORECANVAS.gameObject.SetActive(false);
+        QUESTIONCANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
-
+        WINCANVAS.gameObject.SetActive(false);
+        EXITCANVAS.gameObject.SetActive(false);
+        LOGINCANVAS.gameObject.SetActive(false);
         //TimeManager timeManager=FindObjectOfType<TimeManager>();
     }
-    
+
+    public void StaminarCheck()
+    {
+        Player.INSTANCE.CURSTAMINAR -= Time.deltaTime;
+        Player_Staminar.value = Player.INSTANCE.CURSTAMINAR;
+        Player_Staminar.gameObject.SetActive(true);
+
+        if (Player.INSTANCE.CURSTAMINAR <= 0)
+        {
+            Player_Staminar.gameObject.SetActive(false);
+            Player.INSTANCE.CURSTAMINAR = Player.INSTANCE.MAXSTAMINAR;
+            Player.INSTANCE.PLAYERATTACKPOWER = 0;
+        }
+
+    }
+
     public void Start()
     {
         TITLESCENE();
     }
 
-    //
-    // SCENE UI
-    #region SCENE UI
+    public void Update()
+    {
 
+    }
+
+    //
+    // UI SCENE 
+    #region UI SCENE 
+
+
+    // 타이틀 씬
     public void TITLESCENE()
     {
-        TITLECANVAS.gameObject.SetActive(true);//        
+        TITLECANVAS.gameObject.SetActive(true);//         
         GENERALCANVAS.gameObject.SetActive(false);
         STORECANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
-
-        // 시작 버튼을 누르면 Login 창 띄우기
-        // Login 하면 인게임 씬으로 이동
-        
+        WINCANVAS.gameObject.SetActive(false);
     }
+
+
+    // 인게임, 전투 씬
     public void GENERALSCENE()
     {
         GENERALCANVAS.gameObject.SetActive(true);
@@ -103,12 +155,13 @@ public class UIManager : MonoBehaviour
         STORECANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        WINCANVAS.gameObject.SetActive(false);
+        LOGINCANVAS.gameObject.SetActive(false);
+        Player_Staminar.gameObject.SetActive(false);
+        Player_ID = inputName;
     }
-    public void LOGIN() 
-    {
-        LOGINCANVAS.gameObject.SetActive(true);
-    }
+
+
     public void ACTIONSCENE()
     {
         GENERALCANVAS.gameObject.SetActive(true);
@@ -117,17 +170,22 @@ public class UIManager : MonoBehaviour
         STORECANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        WINCANVAS.gameObject.SetActive(false);
     }
 
+    public void QUESTION()
+    {
+        QUESTIONCANVAS.gameObject.SetActive(true);
+    }
     public void STORESCENE()
     {
         GENERALCANVAS.gameObject.SetActive(false);
         TITLECANVAS.gameObject.SetActive(false);
         STORECANVAS.gameObject.SetActive(true);//        
+        QUESTIONCANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        WINCANVAS.gameObject.SetActive(false);
     }
 
     public void GAMECLEARSCENE()
@@ -137,7 +195,7 @@ public class UIManager : MonoBehaviour
         STORECANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(true);//        
         GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        WINCANVAS.gameObject.SetActive(false);
     }
     public void GAMEOVERSCENE()
     {
@@ -146,30 +204,71 @@ public class UIManager : MonoBehaviour
         STORECANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(true);//        
-        
+        WINCANVAS.gameObject.SetActive(false);
     }
-    public void YOUWINSCENE()
+
+    // 누가 죽었는지 먼저 체크해보고
+    // 몬스터가 죽었을 때는 Player WIN 창 띄워주고
+    // 플레이어가 죽었을 때는 Game Over 창 띄워주기
+    bool IsWin = false;
+    public void RESULTSCENE()
     {
-        GENERALCANVAS.gameObject.SetActive(false);
-        TITLECANVAS.gameObject.SetActive(false);
-        STORECANVAS.gameObject.SetActive(false);
-        GAMECLEARCANVAS.gameObject.SetActive(false);
-        GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        if (IsWin == true) // 플레이어 승리
+        {
+            GENERALCANVAS.gameObject.SetActive(false);
+            TITLECANVAS.gameObject.SetActive(false);
+            STORECANVAS.gameObject.SetActive(false);
+            GAMECLEARCANVAS.gameObject.SetActive(false);
+            GAMEOVERCANVAS.gameObject.SetActive(false);
+            WINCANVAS.gameObject.SetActive(true); //
+        }
+        else
+        {
+            GENERALCANVAS.gameObject.SetActive(false);
+            TITLECANVAS.gameObject.SetActive(false);
+            STORECANVAS.gameObject.SetActive(false);
+            GAMECLEARCANVAS.gameObject.SetActive(false);
+            GAMEOVERCANVAS.gameObject.SetActive(true); //
+            WINCANVAS.gameObject.SetActive(false);
+        }
     }
-    public void YOULOSESCENE()
+    public bool Check4WhoIsWin(bool who)
     {
-        GENERALCANVAS.gameObject.SetActive(false);
-        TITLECANVAS.gameObject.SetActive(false);
-        STORECANVAS.gameObject.SetActive(false);
-        GAMECLEARCANVAS.gameObject.SetActive(false);
-        GAMEOVERCANVAS.gameObject.SetActive(false);
-        
+        // 플레이어가 안죽었다면? 플레이어 승리
+        if (Player.INSTANCE.IsDead == false) IsWin = true;
+        // 플레이어가 죽었다면? 플레이어 패배
+        else if (Player.INSTANCE.IsDead == true) IsWin = false;
+
+        return who;
+    }
+
+    public void ONLOGINSCENE()
+    {
+        LOGINCANVAS.gameObject.SetActive(true);
+    }
+    public void OFFLOGINSCENE()
+    {
+        LOGINCANVAS.gameObject.SetActive(false);
+    }
+    public void ONEXITSCENE()
+    {
+        EXITCANVAS.gameObject.SetActive(true);
+    }
+    public void OFFEXITSCENE()
+    {
+        EXITCANVAS.gameObject.SetActive(false);
     }
 
     #endregion
+    // 
 
-    
+
+
+    private void ValueChanged(Slider slider)
+    {
+        int value = (int)slider.value;
+
+    }
 
     //
     // GET INFO
@@ -183,16 +282,20 @@ public class UIManager : MonoBehaviour
         Player_Potion.text = Potion.ToString();
         Player_Attack.text = Attack.ToString();
         Player_ID.text = ID.ToString();
+
+        StorePotionValue = Player_Potion;
+        StoreGoldValue = Player_Gold;
     }
     public void GETMAPINFO(MAPINFO mapinfo) // 플레이어와 충돌해서 얻은 정보 출력
     {
         //MapInfo = GENERALCANVAS.gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        MapInfo.text = "MAPINFO " + mapinfo.ToString();
+        MapInfo.text = mapinfo.ToString();
     }
     public void GETMOBINFO(GameObject mobinfo) // 플레이어와 충돌해서 얻은 정보 출력
-    {   
-        // 체력 업데이트 안됨     
-        MonsterInfo.text = "LV " + mobinfo.GetComponent<Monster>().MOBINFO.ToString() + "\nHP " + mobinfo.GetComponent<Monster>().HP.ToString();         
+    {
+        // 몬스터 HP 슬라이더 추가
+        // 위치는 몬스터 몸에
+        MonsterInfo.text = mobinfo.GetComponent<Monster>().MOBINFO.ToString();
     }
     #endregion
 
@@ -201,19 +304,19 @@ public class UIManager : MonoBehaviour
     #region Button UI
     public void BUYPOTION()
     {
-        if (Player.INSTANCE.Unavailable == true) // 골드가 없을 때 물약구매 막기
+        if (Player.INSTANCE.Shop4BuyAvailable == false) // 골드가 없을 때 물약구매 막기
         {
             Player.INSTANCE.SetPotion(0);
             Player.INSTANCE.SetGold(0);
         }
-        else if (Player.INSTANCE.Unavailable == false)
+        else if (Player.INSTANCE.Shop4BuyAvailable == true)
         {
             Player.INSTANCE.SetPotion(1);
             Player.INSTANCE.SetGold(10);
         }
 
-        Player_Gold.text = "GOLD " + Player.INSTANCE.GetGold().ToString();
-        Player_Potion.text = "POTION " + Player.INSTANCE.GetPotion().ToString();
+        Player_Gold.text = Player.INSTANCE.GetGold().ToString();
+        Player_Potion.text = Player.INSTANCE.GetPotion().ToString();
     }
 
 

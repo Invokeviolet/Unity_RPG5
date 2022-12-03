@@ -10,12 +10,12 @@ public class RotateSkyBox : MonoBehaviour
     void Start()
     {
         degree = 0;
-        speed = 3;
+        speed = 1;
     }
 
     void Update()
     {
-        degree += Time.deltaTime* speed;
+        degree += Time.deltaTime * speed;
         if (degree >= 360)
             degree = 0;
 

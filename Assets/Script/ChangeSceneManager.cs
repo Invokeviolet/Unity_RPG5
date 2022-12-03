@@ -17,6 +17,7 @@ public class ChangeSceneManager : MonoBehaviour
             if (Instance == null)
             {
                 Instance = FindObjectOfType<ChangeSceneManager>();
+               
             }
             return Instance;
         }
@@ -29,6 +30,7 @@ public class ChangeSceneManager : MonoBehaviour
     public bool Ingame { get; set; } = false;
     public bool Action { get; set; } = false;
     public bool Store { get; set; } = false;
+    public bool Npc { get; set; } = false;
 
     public void Start()
     {
@@ -40,50 +42,103 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("00_TITLE_Scene");
         UIManager.INSTANCE.TITLESCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
         Title = true;
         Ingame = false;
         Action = false;
         Store = false;
+        Npc = false;
     }
 
     public void INGAMESCENE() // 인게임
     {
         SceneManager.LoadScene("01_INGAME_Scene");
         UIManager.INSTANCE.GENERALSCENE();
+        GameManager.INSTANCE.myPlayerInGame = true;
         Title = false;
         Ingame = true;
         Action = false;
-        Store = false;
+        Store = false; 
+        Npc = false;
     }
 
     public void STORESCENE() // 상점
     {
         SceneManager.LoadScene("02_STORE_Scene");
         UIManager.INSTANCE.STORESCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
         Title = false;
         Ingame = false;
         Action = false;
         Store = true;
+        Npc = false;
     }
 
-    public void ACTIONSCENE() // 전투
+    public void ACTIONFORESTSCENE() // 전투 - 숲
     {
-        SceneManager.LoadScene("03_ACTION_Scene");        
+        SceneManager.LoadScene("03_ACTION_FOREST_Scene");        
         UIManager.INSTANCE.ACTIONSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
         Title = false;
         Ingame = false;
         Action = true;
         Store = false;
+        Npc = false;
+    }
+    public void ACTIONSWAMPSCENE() // 전투 - 늪
+    {
+        SceneManager.LoadScene("04_ACTION_SWAMP_Scene");
+        UIManager.INSTANCE.ACTIONSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
+        Title = false;
+        Ingame = false;
+        Action = true;
+        Store = false;
+        Npc = false;
+    }
+    public void ACTIONGROUNDSCENE() // 전투 - 땅
+    {
+        SceneManager.LoadScene("05_ACTION_GROUND_Scene");
+        UIManager.INSTANCE.ACTIONSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
+        Title = false;
+        Ingame = false;
+        Action = true;
+        Store = false;
+        Npc = false;
     }
 
-    public void BOSSSCENE() // 보스
+    public void ACTIONBOSSSCENE() // 전투 - 보스
     {
-        SceneManager.LoadScene("04_BOSS_Scene");
+        SceneManager.LoadScene("06_ACTION_BOSS_Scene");
         UIManager.INSTANCE.GENERALSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
         Title = false;
         Ingame = false;
         Action = true;
         Store = false;
+        Npc = false;
+    }
+    public void NPCSCENE() 
+    {
+        SceneManager.LoadScene("07_NPC_Scene");
+        UIManager.INSTANCE.GENERALSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
+        Title = false;
+        Ingame = false;
+        Action = false;
+        Store = false;
+        Npc = true;
+    }
+    public void GAMEOVERSECNE() 
+    {
+        SceneManager.LoadScene("09_GAMEOVER_Scene");
+        UIManager.INSTANCE.GENERALSCENE();
+        GameManager.INSTANCE.myPlayerInGame = false;
+    }
+    public void LOADINGSECNE()
+    {
+        SceneManager.LoadScene("10_LOADING_Scene");
     }
 
     static public void Quit() // 게임 종료

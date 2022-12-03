@@ -15,15 +15,21 @@ EditorBuildSettings:
     path: Assets/Scenes/02_STORE_Scene.unity
     guid: e8d7843e311337c49903ca03334b96c6
   - enabled: 1
-    path: Assets/Scenes/03_ACTION_Scene.unity
+    path: Assets/Scenes/03_ACTION_FOREST_Scene.unity
+    guid: 0a3c01cc78144fa4391753c8931fd742
+  - enabled: 1
+    path: Assets/Scenes/04_ACTION_SWAMP_Scene.unity
+    guid: 1f0870da8b3516f4cbb28341ced9b9d5
+  - enabled: 1
+    path: Assets/Scenes/05_ACTION_GROUND_Scene.unity
     guid: 80ef548f46e4c0040b18cfd12189921a
   - enabled: 1
-    path: Assets/Scenes/04_BOSS_Scene.unity
+    path: Assets/Scenes/07_NPC_Scene.unity
     guid: 21e1a4eef7c6da7479f24956ca79bb5a
   - enabled: 1
-    path: Assets/Scenes/05_CLEAR_Scene.unity
+    path: Assets/Scenes/08_GAMECLEAR_Scene.unity
     guid: 727e994c56e0e5d429f2504131ad7ff6
   - enabled: 1
-    path: Assets/Scenes/06_RESULT_Scene.unity
+    path: Assets/Scenes/10_LOADING_Scene.unity
     guid: d5e89d61258fcdb42847c86f576312b1
   m_configObjects: {}

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
+
 // 전체 데이터 관리
 // 출력을 UI매니저가 하게끔
 
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    // 플레이어가 인게임이니?
+    public bool myPlayerInGame { get; set; }
 
     Player player;
     Monster monster;
