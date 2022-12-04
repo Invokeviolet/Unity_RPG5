@@ -205,7 +205,7 @@ public class Player : MonoBehaviour
     private void UpdatePlayerInfo()
     {
         // 플레이어 정보 업데이트 시점 - 전투씬 전,후
-        UIManager.INSTANCE.GETPLAYERINFO(MyLV, MyGold, MyPotion, MyAttack,MyID);
+        UIManager.INSTANCE.GETPLAYERINFO(MyLV, MyGold, MyPotion, MyAttack);
     }
 
 

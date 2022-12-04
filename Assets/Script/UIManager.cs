@@ -157,6 +157,18 @@ public class UIManager : MonoBehaviour
     public void GENERALSCENE()
     {
         GENERALCANVAS.gameObject.SetActive(true);
+
+        if (inputName.text.Length >= 2 && inputName.text.Length <= 8) //&& UnityEngine.Input.GetKeyDown(KeyCode.Return)
+        {
+            PlayerInputName();
+            Debug.Log(Player_ID.text);
+        }
+        else if (inputName.text.Length < 2 && inputName.text.Length > 8)
+        {
+            Debug.Log("ID는 최소 2자리에서 8자리까지 가능합니다.");
+        }
+
+     
         MonsterInfo.gameObject.SetActive(false);
         TITLECANVAS.gameObject.SetActive(false);
         STORECANVAS.gameObject.SetActive(false);
@@ -167,22 +179,13 @@ public class UIManager : MonoBehaviour
         Player_Staminar.gameObject.SetActive(false);
         //Player_ID.text = inputName.text.ToString();
 
-        playerName = inputName.GetComponent<InputField>().text;
-
-        if (playerName.Length >= 2 && playerName.Length <= 8) //&& UnityEngine.Input.GetKeyDown(KeyCode.Return)
-        {
-            PlayerInputName();
-        }
-        else if (playerName.Length < 2 && playerName.Length > 8)
-        {
-            Debug.Log("ID는 최소 2자리에서 8자리까지 가능합니다.");
-        }
+        
     }
     void PlayerInputName()
     {
-        playerName = inputName.text.ToString();
-        PlayerPrefs.SetString("CurrentPlayerName", playerName);
-        Player_ID.text = playerName;
+       // playerName = inputName.text;
+        //PlayerPrefs.SetString("CurrentPlayerName", inputName.text);
+        Player_ID.text = inputName.text;
     }
 
 
@@ -311,7 +314,7 @@ public class UIManager : MonoBehaviour
     //
     // GET INFO
     #region GET INFO
-    public void GETPLAYERINFO(string Lv, string Gold, string Potion, string Attack, string ID) // 플레이어와 충돌해서 얻은 정보 출력
+    public void GETPLAYERINFO(string Lv, string Gold, string Potion, string Attack) // 플레이어와 충돌해서 얻은 정보 출력
     {
         //PlayerInfo = GENERALCANVAS.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         //PlayerInfo.text = GameManager.INSTANCE.GetPlayer().GETMYINFO().ToString();
@@ -319,7 +322,7 @@ public class UIManager : MonoBehaviour
         Player_Gold.text = Gold.ToString();
         Player_Potion.text = Potion.ToString();
         Player_Attack.text = Attack.ToString();
-        Player_ID.text = ID.ToString();
+        //Player_ID.text = ID.ToString();
 
         StorePotionValue = Player_Potion;
         StoreGoldValue = Player_Gold;
@@ -359,7 +362,7 @@ public class UIManager : MonoBehaviour
 
 
     #endregion
-
+/*
     //------------------------------------------------------------------
 
     // 이름 입력 상자
@@ -389,7 +392,7 @@ public class UIManager : MonoBehaviour
     #endregion // 이름 입력 상자
 
     //------------------------------------------------------------------
-
+*/
 
 
 }
