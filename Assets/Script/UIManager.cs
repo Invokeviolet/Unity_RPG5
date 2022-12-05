@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Canvas GAMEOVERCANVAS;
     [SerializeField] Canvas WINCANVAS;
     [SerializeField] Canvas EXITCANVAS;
+    //[SerializeField] Canvas RUNCANVAS;
 
     [Header("[PLAYER INFO]")]
     [SerializeField] public Text Player_Lv;
@@ -51,6 +52,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] Button ExitButton;
     [SerializeField] Button QuitButton;
     [SerializeField] Button QuitCancleButton;
+    [SerializeField] Button RunButton; // 임시 버튼
 
     [Header("[STORE UI]")]
     [SerializeField] Button BackButton;
@@ -102,12 +104,14 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
+        RunButton.gameObject.SetActive(false);
         EXITCANVAS.gameObject.SetActive(false);
         LOGINCANVAS.gameObject.SetActive(false);
         //TimeManager timeManager=FindObjectOfType<TimeManager>();
 
     }
 
+    // 플레이어의 스태미나 체크
     public void StaminarCheck()
     {
         Player.INSTANCE.CURSTAMINAR -= Time.deltaTime;
@@ -126,7 +130,6 @@ public class UIManager : MonoBehaviour
     public void Start()
     {
         TITLESCENE();
-        //playerName = inputName.GetComponent<InputField>().text;
     }
 
     public void Update()
@@ -148,8 +151,6 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
-
-
     }
 
 
@@ -167,8 +168,8 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("ID는 최소 2자리에서 8자리까지 가능합니다.");
         }
+        UpdatePlayerInfo();
 
-     
         MonsterInfo.gameObject.SetActive(false);
         TITLECANVAS.gameObject.SetActive(false);
         STORECANVAS.gameObject.SetActive(false);
@@ -177,15 +178,21 @@ public class UIManager : MonoBehaviour
         WINCANVAS.gameObject.SetActive(false);
         LOGINCANVAS.gameObject.SetActive(false);
         Player_Staminar.gameObject.SetActive(false);
-        //Player_ID.text = inputName.text.ToString();
+        RunButton.gameObject.SetActive(false);
 
-        
     }
     void PlayerInputName()
     {
-       // playerName = inputName.text;
+        // playerName = inputName.text;
         //PlayerPrefs.SetString("CurrentPlayerName", inputName.text);
         Player_ID.text = inputName.text;
+    }
+    void UpdatePlayerInfo()
+    {
+        StoreGoldValue.text = Player.INSTANCE.GetGold().ToString();
+        StorePotionValue.text = Player.INSTANCE.GetPotion().ToString();
+        Player_Gold.text = Player.INSTANCE.GetGold().ToString();
+        Player_Potion.text = Player.INSTANCE.GetPotion().ToString();
     }
 
 
@@ -199,21 +206,32 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
+        RunButton.gameObject.SetActive(true);
     }
 
-    public void QUESTION()
+    // 버튼을 눌렀을때 실행되는 함수
+    public void ONQUESTION()
     {
         QUESTIONCANVAS.gameObject.SetActive(true);
+        GameManager.INSTANCE.IsWindowOpen = true;
     }
+    public void OFFQUESTION()
+    {
+        QUESTIONCANVAS.gameObject.SetActive(false);
+        GameManager.INSTANCE.IsWindowOpen = false;
+    }
+
     public void STORESCENE()
     {
         GENERALCANVAS.gameObject.SetActive(false);
         TITLECANVAS.gameObject.SetActive(false);
-        STORECANVAS.gameObject.SetActive(true);//        
+        STORECANVAS.gameObject.SetActive(true);//
+        UpdatePlayerInfo();
         QUESTIONCANVAS.gameObject.SetActive(false);
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
+        RunButton.gameObject.SetActive(false);
     }
 
     public void GAMECLEARSCENE()
@@ -224,6 +242,7 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(true);//        
         GAMEOVERCANVAS.gameObject.SetActive(false);
         WINCANVAS.gameObject.SetActive(false);
+        RunButton.gameObject.SetActive(false);
     }
     public void GAMEOVERSCENE()
     {
@@ -233,6 +252,7 @@ public class UIManager : MonoBehaviour
         GAMECLEARCANVAS.gameObject.SetActive(false);
         GAMEOVERCANVAS.gameObject.SetActive(true);//        
         WINCANVAS.gameObject.SetActive(false);
+        RunButton.gameObject.SetActive(false);
     }
 
     // 누가 죽었는지 먼저 체크해보고
@@ -276,7 +296,6 @@ public class UIManager : MonoBehaviour
     public void ONLOGINSCENE()
     {
         LOGINCANVAS.gameObject.SetActive(true);
-
     }
 
     public void OFFLOGINSCENE()
@@ -293,6 +312,7 @@ public class UIManager : MonoBehaviour
     public void ONEXITSCENE()
     {
         EXITCANVAS.gameObject.SetActive(true);
+        GameManager.INSTANCE.IsWindowOpen = true;
     }
     public void OFFEXITSCENE()
     {
@@ -314,18 +334,16 @@ public class UIManager : MonoBehaviour
     //
     // GET INFO
     #region GET INFO
-    public void GETPLAYERINFO(string Lv, string Gold, string Potion, string Attack) // 플레이어와 충돌해서 얻은 정보 출력
+    public void GETPLAYERINFO(string Lv, string Attack) // 플레이어와 충돌해서 얻은 정보 출력
     {
         //PlayerInfo = GENERALCANVAS.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         //PlayerInfo.text = GameManager.INSTANCE.GetPlayer().GETMYINFO().ToString();
         Player_Lv.text = Lv.ToString();
-        Player_Gold.text = Gold.ToString();
-        Player_Potion.text = Potion.ToString();
+        //Player_Gold.text = Gold.ToString();
+        //Player_Potion.text = Potion.ToString();
         Player_Attack.text = Attack.ToString();
         //Player_ID.text = ID.ToString();
 
-        StorePotionValue = Player_Potion;
-        StoreGoldValue = Player_Gold;
     }
     public void GETMAPINFO(MAPINFO mapinfo) // 플레이어와 충돌해서 얻은 정보 출력
     {
@@ -350,49 +368,48 @@ public class UIManager : MonoBehaviour
             Player.INSTANCE.SetPotion(0);
             Player.INSTANCE.SetGold(0);
         }
-        else if (Player.INSTANCE.Shop4BuyAvailable == true)
+        else //if (Player.INSTANCE.Shop4BuyAvailable == true)
         {
+            Debug.Log("2");
             Player.INSTANCE.SetPotion(1);
             Player.INSTANCE.SetGold(10);
         }
-
-        Player_Gold.text = Player.INSTANCE.GetGold().ToString();
-        Player_Potion.text = Player.INSTANCE.GetPotion().ToString();
+        UpdatePlayerInfo();
     }
 
 
     #endregion
-/*
-    //------------------------------------------------------------------
+    /*
+        //------------------------------------------------------------------
 
-    // 이름 입력 상자
-    #region 이름 입력 상자
+        // 이름 입력 상자
+        #region 이름 입력 상자
 
-    public bool InputNameResult { get; private set; } = false;
+        public bool InputNameResult { get; private set; } = false;
 
-    public void ShowInputName(bool show = true)
-    {
-        objInputName.SetActive(show);
-    }
+        public void ShowInputName(bool show = true)
+        {
+            objInputName.SetActive(show);
+        }
 
-    public void OnClick_Confirm()
-    {
-        // 이름은 반드시 입력하자
-        if (string.IsNullOrEmpty(inputName.text)) return;
+        public void OnClick_Confirm()
+        {
+            // 이름은 반드시 입력하자
+            if (string.IsNullOrEmpty(inputName.text)) return;
 
-        InputNameResult = true;
-        PlayerPrefs.SetString("myname", inputName.text);
-        SetPlayerName(inputName.text);
-    }
+            InputNameResult = true;
+            PlayerPrefs.SetString("myname", inputName.text);
+            SetPlayerName(inputName.text);
+        }
 
-    public void SetPlayerName(string name)
-    {
-        Player_ID.text = name; // 화면 UI에 표시하자
-    }
-    #endregion // 이름 입력 상자
+        public void SetPlayerName(string name)
+        {
+            Player_ID.text = name; // 화면 UI에 표시하자
+        }
+        #endregion // 이름 입력 상자
 
-    //------------------------------------------------------------------
-*/
+        //------------------------------------------------------------------
+    */
 
 
 }

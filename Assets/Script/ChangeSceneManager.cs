@@ -54,6 +54,7 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("01_INGAME_Scene");
         UIManager.INSTANCE.GENERALSCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = true;
         Title = false;
         Ingame = true;
@@ -66,6 +67,7 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("02_STORE_Scene");
         UIManager.INSTANCE.STORESCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
         Title = false;
         Ingame = false;
@@ -74,11 +76,14 @@ public class ChangeSceneManager : MonoBehaviour
         Npc = false;
     }
 
+
     public void ACTIONFORESTSCENE() // 전투 - 숲
     {
         SceneManager.LoadScene("03_ACTION_FOREST_Scene");        
         UIManager.INSTANCE.ACTIONSCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = true;
         Title = false;
         Ingame = false;
         Action = true;
@@ -89,7 +94,9 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("04_ACTION_SWAMP_Scene");
         UIManager.INSTANCE.ACTIONSCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = true;
         Title = false;
         Ingame = false;
         Action = true;
@@ -100,7 +107,9 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("05_ACTION_GROUND_Scene");
         UIManager.INSTANCE.ACTIONSCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = true;
         Title = false;
         Ingame = false;
         Action = true;
@@ -112,7 +121,9 @@ public class ChangeSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene("06_ACTION_BOSS_Scene");
         UIManager.INSTANCE.GENERALSCENE();
+        UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = true;
         Title = false;
         Ingame = false;
         Action = true;
@@ -124,6 +135,7 @@ public class ChangeSceneManager : MonoBehaviour
         SceneManager.LoadScene("07_NPC_Scene");
         UIManager.INSTANCE.GENERALSCENE();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = true;
         Title = false;
         Ingame = false;
         Action = false;
@@ -139,6 +151,7 @@ public class ChangeSceneManager : MonoBehaviour
     public void LOADINGSECNE()
     {
         SceneManager.LoadScene("10_LOADING_Scene");
+        GameManager.INSTANCE.myPlayerInGame = false;
     }
 
     static public void Quit() // 게임 종료

@@ -50,6 +50,10 @@ public class GameManager : MonoBehaviour
 
     // 플레이어가 인게임이니?
     public bool myPlayerInGame { get; set; }
+    // 다른 윈도우 창이 켜져있나?
+    public bool IsWindowOpen { get; set; }
+    // 플레이어가 전투중이니?
+    public bool myPlayerAction { get; set; }
 
     Player player;
     Monster monster;

@@ -5,21 +5,21 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 
 
-public class MapSpawner : MonoBehaviour
+public class MapSpawner_INGAME : MonoBehaviour
 {
     // 맵을 싱글톤으로 선언해서 씬이동이 있어도 저장되도록 -> 플레이어 위치도 여기에 저장
 
     // 싱글톤
     #region 싱글톤
 
-    private static MapSpawner Instance = null;
-    public static MapSpawner INSTANCE
+    private static MapSpawner_INGAME Instance = null;
+    public static MapSpawner_INGAME INSTANCE
     {
         get
         {
             if (Instance == null)
             {
-                Instance = FindObjectOfType<MapSpawner>();
+                Instance = FindObjectOfType<MapSpawner_INGAME>();
             }
             
             return Instance;
@@ -27,16 +27,19 @@ public class MapSpawner : MonoBehaviour
     }
     #endregion
 
-    // 플레이어
-    [SerializeField] Player PlayerPrefab;
-
     // 시작점 도착점
     Vector3 zeroPos;
     Vector3 finPos;
 
-    //[SerializeField] Monster BossPrefab;
+
+    // 플레이어
+    [SerializeField] Player PlayerPrefab;
+    // 몬스터
     [SerializeField] Monster MonsterPrefab;
+    // 맵 큐브
     [SerializeField] Cube CubePrefab;
+    // 바나나존
+    // [SerializeField] Banana BananaPrefab; 
 
 
     // 1개 -> 10 x 10 배열로 받아서 생성    
@@ -48,12 +51,12 @@ public class MapSpawner : MonoBehaviour
     Monster[] mobs;
 
     // 큐브 갯수
-    int count = 10;
+    private int count = 10;
     // 스테이지 표시 -> 1
-    int stage = 1;
+    private int stage = 1;
     // 몬스터 수
-    int CurMobCount = 0;
-    int MaxMobCount = 20;
+    private int CurMobCount = 0;
+    private int MaxMobCount = 30;
     // 랜덤 위치 생성 해서 배열에 저장
     int random;
 
@@ -70,7 +73,7 @@ public class MapSpawner : MonoBehaviour
         // 큐브 담을 배열
         cubes = new Cube[count, count];
         // 몬스터 담을 배열
-        mobs = new Monster[20];
+        mobs = new Monster[MaxMobCount];
 
         // 로컬 스케일 받아오기
         float xScale = CubePrefab.transform.localScale.x;

@@ -60,7 +60,8 @@ public class Monster : MonoBehaviour
         UIManager.INSTANCE.Check4WhoIsWin(false);
         // 2초 뒤 몬스터 잡았다는 창 띄우기
         Invoke("UIManager.INSTANCE.RESULTSCENE()", 2f);
-
+        // 플레이어 경험치 증가
+        Player.INSTANCE.ExpUpdate(1200);
     }
 
     // 대전 게임
