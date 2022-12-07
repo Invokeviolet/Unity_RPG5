@@ -56,6 +56,7 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.GENERALSCENE();
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = true;
+        GameManager.INSTANCE.myPlayerAction = false;
         Title = false;
         Ingame = true;
         Action = false;
@@ -69,6 +70,7 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.STORESCENE();
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
+        GameManager.INSTANCE.myPlayerAction = false;
         Title = false;
         Ingame = false;
         Action = false;

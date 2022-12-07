@@ -162,7 +162,7 @@ public class UIManager : MonoBehaviour
         if (inputName.text.Length >= 2 && inputName.text.Length <= 8) //&& UnityEngine.Input.GetKeyDown(KeyCode.Return)
         {
             PlayerInputName();
-            Debug.Log(Player_ID.text);
+            //Debug.Log(Player_ID.text);
         }
         else if (inputName.text.Length < 2 && inputName.text.Length > 8)
         {

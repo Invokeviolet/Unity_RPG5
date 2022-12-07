@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.28886145, g: 0.67497, b: 0.7906772, a: 1}
+  m_IndirectSpecularColor: {r: 0.2888383, g: 0.6749284, b: 0.79066354, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -19237,6 +19237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapCubePrefab: {fileID: 8909343279507162317, guid: d0ed34b91f208bf4e8b2f226abc18dbc, type: 3}
+  ActionPlayerPrefab: {fileID: 1536148302575698925, guid: 7c9a826ad13b3d843ac51eb7a9d3b99a, type: 3}
   MonsterParentPrefab: {fileID: 130443150329070885, guid: 30d120fcde78d4d44bb451248f361ade, type: 3}
   MonsterPrefab: {fileID: 130443150329070885, guid: 43c000051f9c2f54a9db654b066fe3f1, type: 3}
 --- !u!1 &1156006057

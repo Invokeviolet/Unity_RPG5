@@ -202,6 +202,7 @@ public class Player : MonoBehaviour
         else if ((GameManager.INSTANCE.myPlayerAction == true) && (GameManager.INSTANCE.IsWindowOpen == false))
         {
             PlayerMoveToAction();
+            // 인게임씬 플레이어가 이동되는 문제
             PlayerAction();
         }
         PlayerCharge();
@@ -239,7 +240,7 @@ public class Player : MonoBehaviour
     void PlayerMoveToIngame()
     {
         // WASD 키로 이동
-        if (Input.GetKeyDown((KeyCode.W))) // 앞
+        if (Input.GetKeyDown((KeyCode.T))) // 앞
         {
             PlayerPos.transform.position += Vector3.forward;
             if (PlayerPos.transform.position.z >= 9)
@@ -247,7 +248,7 @@ public class Player : MonoBehaviour
                 PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 9);
             }
         }
-        else if (Input.GetKeyDown((KeyCode.A))) // 왼 
+        else if (Input.GetKeyDown((KeyCode.F))) // 왼 
         {
             PlayerPos.transform.position += Vector3.left;
             if (PlayerPos.transform.position.x <= 0)
@@ -255,7 +256,7 @@ public class Player : MonoBehaviour
                 PlayerPos.transform.position = new Vector3(0, 0.5f, PlayerPos.transform.position.z);
             }
         }
-        else if (Input.GetKeyDown((KeyCode.S))) // 뒤
+        else if (Input.GetKeyDown((KeyCode.G))) // 뒤
         {
             PlayerPos.transform.position += Vector3.back;
             if (PlayerPos.transform.position.z <= 0)
@@ -263,7 +264,7 @@ public class Player : MonoBehaviour
                 PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 0);
             }
         }
-        else if (Input.GetKeyDown((KeyCode.D))) // 오른
+        else if (Input.GetKeyDown((KeyCode.H))) // 오른
         {
             PlayerPos.transform.position += Vector3.right;
             if (PlayerPos.transform.position.x >= 9)
@@ -282,15 +283,17 @@ public class Player : MonoBehaviour
     #region 플레이어 전투씬 이동
     void PlayerMoveToAction()
     {
-        PlayerRB = this.gameObject.GetComponent<Rigidbody>();
-        float hAxis = Input.GetAxisRaw("Horizontal");
-        float vAxis = Input.GetAxisRaw("Vertical");
-
-        Vector3 InputMoveDir = new Vector3(hAxis, 0, vAxis).normalized;
-
-        PlayerRB.velocity = InputMoveDir * PlayerMoveSpeed;
-        transform.LookAt(transform.position + InputMoveDir);
         
+        PlayerRB = this.gameObject.GetComponent<Rigidbody>();
+        //float hAxis = Input.GetAxisRaw("Horizontal");
+        //float vAxis = Input.GetAxisRaw("Vertical");
+
+        Vector3 InputMoveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        PlayerRB.velocity = InputMoveDir * PlayerMoveSpeed;
+
+        transform.LookAt(transform.position + InputMoveDir);
+        transform.Translate(InputMoveDir);
+
         // LimitingPlayerMovement();
     }
 
