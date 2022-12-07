@@ -25,13 +25,13 @@ public class MapSpawner_ACTION : MonoBehaviour
     // 맵 지면 생성
     [SerializeField] GameObject MapCubePrefab;
 
-    [SerializeField] Player ActionPlayerPrefab;
+    //[SerializeField] Player ActionPlayerPrefab;
     // 몬스터 프리팹 받아오기
     [SerializeField] Monster MonsterParentPrefab;
     [SerializeField] Monster MonsterPrefab;
 
     GameObject MAPCUBE = null;
-    Player ActionPlayer;
+    //Player ActionPlayer;
     Monster ActionMobParents = null;
     Monster ActionMob;
 
@@ -54,7 +54,7 @@ public class MapSpawner_ACTION : MonoBehaviour
     void Start()
     {
         MAPCUBE = Instantiate(MapCubePrefab, transform.position, Quaternion.identity,transform);
-        ActionPlayer = Instantiate(ActionPlayerPrefab, vec3, Quaternion.identity, transform);
+        //ActionPlayer = Instantiate(ActionPlayerPrefab, transform.position, Quaternion.identity, transform);
         ActionMobParents = Instantiate(MonsterParentPrefab, transform.position, Quaternion.identity, transform);
         ActionMob = Instantiate(MonsterPrefab, transform.position, Quaternion.identity, transform);
     }

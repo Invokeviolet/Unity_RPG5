@@ -31,7 +31,8 @@ public class Player : MonoBehaviour
 
     ChangeSceneManager SCENEMANAGER;
     Monster monster;
-    Transform PlayerPos;
+    Transform IngamePlayerPos;
+    public Transform ActionPlayerPos;
     Cube cube;
     Vector3 pos;
     float PlayerPosX;
@@ -43,7 +44,8 @@ public class Player : MonoBehaviour
     public float PlayerMoveSpeed;
     // 플레이어 리지드바디
     private Rigidbody PlayerRB;
-
+    // 플레이어 위치 받아오기
+    private Transform SaveMyPos { get; set; }
 
     // 플레이어 정보 
     private int PLAYERLEVEL = 1;
@@ -63,11 +65,15 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         monster = FindObjectOfType<Monster>();
-        PlayerPos = GetComponent<Transform>();
-        PlayerPos.transform.position = new Vector3(0, 0.5f, 0);
+        IngamePlayerPos = GetComponent<Transform>();
+        ActionPlayerPos = GetComponent<Transform>();
 
-        PlayerPosX = PlayerPos.transform.position.x;
-        PlayerPosZ = PlayerPos.transform.position.z;
+        IngamePlayerPos.transform.position = new Vector3(0, 0.5f, 0);
+        
+        SaveMyPos = IngamePlayerPos;
+
+        PlayerPosX = IngamePlayerPos.transform.position.x;
+        PlayerPosZ = IngamePlayerPos.transform.position.z;
 
         SCENEMANAGER = new ChangeSceneManager();
 
@@ -242,34 +248,34 @@ public class Player : MonoBehaviour
         // WASD 키로 이동
         if (Input.GetKeyDown((KeyCode.T))) // 앞
         {
-            PlayerPos.transform.position += Vector3.forward;
-            if (PlayerPos.transform.position.z >= 9)
+            IngamePlayerPos.transform.position += Vector3.forward;
+            if (IngamePlayerPos.transform.position.z >= 9)
             {
-                PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 9);
+                IngamePlayerPos.transform.position = new Vector3(IngamePlayerPos.transform.position.x, 0.5f, 9);
             }
         }
         else if (Input.GetKeyDown((KeyCode.F))) // 왼 
         {
-            PlayerPos.transform.position += Vector3.left;
-            if (PlayerPos.transform.position.x <= 0)
+            IngamePlayerPos.transform.position += Vector3.left;
+            if (IngamePlayerPos.transform.position.x <= 0)
             {
-                PlayerPos.transform.position = new Vector3(0, 0.5f, PlayerPos.transform.position.z);
+                IngamePlayerPos.transform.position = new Vector3(0, 0.5f, IngamePlayerPos.transform.position.z);
             }
         }
         else if (Input.GetKeyDown((KeyCode.G))) // 뒤
         {
-            PlayerPos.transform.position += Vector3.back;
-            if (PlayerPos.transform.position.z <= 0)
+            IngamePlayerPos.transform.position += Vector3.back;
+            if (IngamePlayerPos.transform.position.z <= 0)
             {
-                PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 0);
+                IngamePlayerPos.transform.position = new Vector3(IngamePlayerPos.transform.position.x, 0.5f, 0);
             }
         }
         else if (Input.GetKeyDown((KeyCode.H))) // 오른
         {
-            PlayerPos.transform.position += Vector3.right;
-            if (PlayerPos.transform.position.x >= 9)
+            IngamePlayerPos.transform.position += Vector3.right;
+            if (IngamePlayerPos.transform.position.x >= 9)
             {
-                PlayerPos.transform.position = new Vector3(9, 0.5f, PlayerPos.transform.position.z);
+                IngamePlayerPos.transform.position = new Vector3(9, 0.5f, IngamePlayerPos.transform.position.z);
             }
         }
 
@@ -300,21 +306,21 @@ public class Player : MonoBehaviour
     // 플레이어 전투씬 이동중 맵 범위 제한
     private void LimitingPlayerMovement()
     {
-        if ((PlayerPos.transform.position.z <= -24) && (PlayerPos.transform.position.x <= -24))
+        if ((IngamePlayerPos.transform.position.z <= -24) && (IngamePlayerPos.transform.position.x <= -24))
         {
-            PlayerPos.transform.position = new Vector3(-24, PlayerPos.transform.position.y, -24);
+            IngamePlayerPos.transform.position = new Vector3(-24, IngamePlayerPos.transform.position.y, -24);
         }
-        if ((PlayerPos.transform.position.z >= -24) && (PlayerPos.transform.position.x <= 24))
+        if ((IngamePlayerPos.transform.position.z >= -24) && (IngamePlayerPos.transform.position.x <= 24))
         {
-            PlayerPos.transform.position = new Vector3(-24, PlayerPos.transform.position.y, 24);
+            IngamePlayerPos.transform.position = new Vector3(-24, IngamePlayerPos.transform.position.y, 24);
         }
-        if ((PlayerPos.transform.position.z <= 24) && (PlayerPos.transform.position.x >= -24))
+        if ((IngamePlayerPos.transform.position.z <= 24) && (IngamePlayerPos.transform.position.x >= -24))
         {
-            PlayerPos.transform.position = new Vector3(24, PlayerPos.transform.position.y, -24);
+            IngamePlayerPos.transform.position = new Vector3(24, IngamePlayerPos.transform.position.y, -24);
         }
-        if ((PlayerPos.transform.position.z <= 24) && (PlayerPos.transform.position.x <= 24))
+        if ((IngamePlayerPos.transform.position.z <= 24) && (IngamePlayerPos.transform.position.x <= 24))
         {
-            PlayerPos.transform.position = new Vector3(24, PlayerPos.transform.position.y, 24);
+            IngamePlayerPos.transform.position = new Vector3(24, IngamePlayerPos.transform.position.y, 24);
         }
     }
     #endregion

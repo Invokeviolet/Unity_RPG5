@@ -86,6 +86,9 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
+
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+
         Title = false;
         Ingame = false;
         Action = true;
@@ -99,6 +102,9 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
+
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0); // 플레이어 다른씬에서 움직임 막기
+
         Title = false;
         Ingame = false;
         Action = true;
@@ -112,6 +118,9 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
+
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+
         Title = false;
         Ingame = false;
         Action = true;
@@ -126,6 +135,9 @@ public class ChangeSceneManager : MonoBehaviour
         UIManager.INSTANCE.OFFQUESTION();
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
+
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+
         Title = false;
         Ingame = false;
         Action = true;
