@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     // 싱글톤
     #region 싱글톤
 
+    // [SerializeField] GameObject myPlayer;
+
     private static Player Instance = null;
     public static Player INSTANCE
     {
@@ -20,7 +22,10 @@ public class Player : MonoBehaviour
                 Instance = FindObjectOfType<Player>();
                 if (Instance == null)
                 {
-                    Instance = new GameObject("Player").AddComponent<Player>();
+                    // 플레이어 생성
+                    Debug.Log("싱글턴! 플레이어! 생성!");
+                    Instance = new GameObject("Player").AddComponent<Player>();                    
+                    //Instance = new GameObject("PlayerCam").AddComponent<PlayerCamera>();                   
                 }
             }
             DontDestroyOnLoad(Instance.gameObject);
@@ -31,12 +36,14 @@ public class Player : MonoBehaviour
 
     ChangeSceneManager SCENEMANAGER;
     Monster monster;
-    Transform IngamePlayerPos;
+    public Transform PlayerPos;
     public Transform ActionPlayerPos;
+
     Cube cube;
     Vector3 pos;
     float PlayerPosX;
     float PlayerPosZ;
+    int PlayerSpeed;
 
     public bool IsDead { get; set; }
 
@@ -46,6 +53,9 @@ public class Player : MonoBehaviour
     private Rigidbody PlayerRB;
     // 플레이어 위치 받아오기
     private Transform SaveMyPos { get; set; }
+    // 플레이어 카메라 위치
+    [SerializeField] Transform PlayerCamTransform = null;
+
 
     // 플레이어 정보 
     private int PLAYERLEVEL = 1;
@@ -61,19 +71,25 @@ public class Player : MonoBehaviour
     public float MAXSTAMINAR = 0.5f;
 
     public bool Shop4BuyAvailable = true;
+    bool isRun = false;
+
 
     private void Awake()
     {
         monster = FindObjectOfType<Monster>();
-        IngamePlayerPos = GetComponent<Transform>();
-        ActionPlayerPos = GetComponent<Transform>();
+        ActionPlayerPos = GetComponent<Transform>(); // 액션씬에서 받을 플레이어 위치값
+        PlayerPos = GetComponent<Transform>();
+        PlayerRB = this.gameObject.GetComponent<Rigidbody>();
 
-        IngamePlayerPos.transform.position = new Vector3(0, 0.5f, 0);
-        
-        SaveMyPos = IngamePlayerPos;
+        PlayerPos.transform.position = new Vector3(0, 0.5f, 0);
+        // Instance.transform.position = PlayerPos.transform.position;
 
-        PlayerPosX = IngamePlayerPos.transform.position.x;
-        PlayerPosZ = IngamePlayerPos.transform.position.z;
+        // 플레이어 위치는 인게임씬 위치값을 저장해뒀다가
+        // 인게임 씬으로 갈때마다 저장했던 위치 불러오기
+        SaveMyPos = PlayerPos; 
+
+        PlayerPosX = PlayerPos.transform.position.x;
+        PlayerPosZ = PlayerPos.transform.position.z;
 
         SCENEMANAGER = new ChangeSceneManager();
 
@@ -168,8 +184,6 @@ public class Player : MonoBehaviour
         return mapInfo;
     }
 
-    bool isBattle = false;
-
     string MyLV = "";
     string MyID = "";
     string MyGold = "";
@@ -187,8 +201,16 @@ public class Player : MonoBehaviour
         {
             this.gameObject.AddComponent<Rigidbody>();
         }
+        if (PlayerCamTransform == null) // 카메라 ------------------------------------------------------------------------------------------
+        {
+            PlayerCamTransform = GameObject.Find("PlayerCam").transform;
+            
+        }
     }
 
+
+    // Update
+    #region Update
     private void Update()
     {
         MyLV = "LV ." + PLAYERLEVEL.ToString();
@@ -215,6 +237,10 @@ public class Player : MonoBehaviour
         UpdatePlayerInfo();
 
     }
+    #endregion 
+
+
+
 
     private void UpdatePlayerInfo() // 나중에 안쓰면 삭제
     {
@@ -245,37 +271,40 @@ public class Player : MonoBehaviour
     #region 플레이어 인게임 이동
     void PlayerMoveToIngame()
     {
+        this.transform.position = PlayerPos.transform.position;
+        PlayerPos = SaveMyPos ;
+
         // WASD 키로 이동
         if (Input.GetKeyDown((KeyCode.T))) // 앞
         {
-            IngamePlayerPos.transform.position += Vector3.forward;
-            if (IngamePlayerPos.transform.position.z >= 9)
+            PlayerPos.transform.position += Vector3.forward;
+            if (PlayerPos.transform.position.z >= 9)
             {
-                IngamePlayerPos.transform.position = new Vector3(IngamePlayerPos.transform.position.x, 0.5f, 9);
+                PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 9);
             }
         }
         else if (Input.GetKeyDown((KeyCode.F))) // 왼 
         {
-            IngamePlayerPos.transform.position += Vector3.left;
-            if (IngamePlayerPos.transform.position.x <= 0)
+            PlayerPos.transform.position += Vector3.left;
+            if (PlayerPos.transform.position.x <= 0)
             {
-                IngamePlayerPos.transform.position = new Vector3(0, 0.5f, IngamePlayerPos.transform.position.z);
+                PlayerPos.transform.position = new Vector3(0, 0.5f, PlayerPos.transform.position.z);
             }
         }
         else if (Input.GetKeyDown((KeyCode.G))) // 뒤
         {
-            IngamePlayerPos.transform.position += Vector3.back;
-            if (IngamePlayerPos.transform.position.z <= 0)
+            PlayerPos.transform.position += Vector3.back;
+            if (PlayerPos.transform.position.z <= 0)
             {
-                IngamePlayerPos.transform.position = new Vector3(IngamePlayerPos.transform.position.x, 0.5f, 0);
+                PlayerPos.transform.position = new Vector3(PlayerPos.transform.position.x, 0.5f, 0);
             }
         }
         else if (Input.GetKeyDown((KeyCode.H))) // 오른
         {
-            IngamePlayerPos.transform.position += Vector3.right;
-            if (IngamePlayerPos.transform.position.x >= 9)
+            PlayerPos.transform.position += Vector3.right;
+            if (PlayerPos.transform.position.x >= 9)
             {
-                IngamePlayerPos.transform.position = new Vector3(9, 0.5f, IngamePlayerPos.transform.position.z);
+                PlayerPos.transform.position = new Vector3(9, 0.5f, PlayerPos.transform.position.z);
             }
         }
 
@@ -283,46 +312,48 @@ public class Player : MonoBehaviour
     #endregion
 
 
+    // 화면용 카메라
+    // 플레이어용 카메라
+
+
     //
     //
     // 플레이어 전투씬 이동
     #region 플레이어 전투씬 이동
+
+    protected float hAxis = 0f;
+    protected float vAxis = 0f;
+    protected bool isMove = false;
+    protected Vector3 moveDir;
+
     void PlayerMoveToAction()
     {
-        
-        PlayerRB = this.gameObject.GetComponent<Rigidbody>();
-        //float hAxis = Input.GetAxisRaw("Horizontal");
-        //float vAxis = Input.GetAxisRaw("Vertical");
+        hAxis = Input.GetAxis("Horizontal");
+        vAxis = Input.GetAxis("Vertical");
 
-        Vector3 InputMoveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        PlayerRB.velocity = InputMoveDir * PlayerMoveSpeed;
+        isMove = !Mathf.Approximately(hAxis, 0f) || !Mathf.Approximately(vAxis, 0f);
 
-        transform.LookAt(transform.position + InputMoveDir);
-        transform.Translate(InputMoveDir);
+        moveDir = hAxis * PlayerCamTransform.right + vAxis * PlayerCamTransform.forward;
+        moveDir.Normalize();
 
-        // LimitingPlayerMovement();
+        // this.PlayerRB.position + Time.deltaTime * PlayerSpeed * moveDir);
+
+
+        // 달리기
+        //if (Input.GetKey(KeyCode.LeftShift))
+        //{
+        //      isRun = true;
+        //      PlayerSpeed  = PlayerSpeed*2;
+        //}
+        //else isRun = false;
+
+        // 마우스 버튼 클릭시 공격
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //
+        //}
     }
 
-    // 플레이어 전투씬 이동중 맵 범위 제한
-    private void LimitingPlayerMovement()
-    {
-        if ((IngamePlayerPos.transform.position.z <= -24) && (IngamePlayerPos.transform.position.x <= -24))
-        {
-            IngamePlayerPos.transform.position = new Vector3(-24, IngamePlayerPos.transform.position.y, -24);
-        }
-        if ((IngamePlayerPos.transform.position.z >= -24) && (IngamePlayerPos.transform.position.x <= 24))
-        {
-            IngamePlayerPos.transform.position = new Vector3(-24, IngamePlayerPos.transform.position.y, 24);
-        }
-        if ((IngamePlayerPos.transform.position.z <= 24) && (IngamePlayerPos.transform.position.x >= -24))
-        {
-            IngamePlayerPos.transform.position = new Vector3(24, IngamePlayerPos.transform.position.y, -24);
-        }
-        if ((IngamePlayerPos.transform.position.z <= 24) && (IngamePlayerPos.transform.position.x <= 24))
-        {
-            IngamePlayerPos.transform.position = new Vector3(24, IngamePlayerPos.transform.position.y, 24);
-        }
-    }
     #endregion
     //
 

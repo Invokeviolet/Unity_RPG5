@@ -45,7 +45,7 @@ public class MapSpawner_INGAME : MonoBehaviour
     // 1개 -> 10 x 10 배열로 받아서 생성    
     Monster MOBS = null;
     Cube MAPTILE = null;
-    Player PLAYER = null;
+    Player PLAYER = null; // 플레이어 생성
     GameObject EmptyBox;
     Cube[,] cubes;
     Monster[] mobs;
@@ -244,7 +244,9 @@ public class MapSpawner_INGAME : MonoBehaviour
         }
 
         // 플레이어 생성
-        PLAYER = Instantiate(PlayerPrefab, Vector3.zero, Quaternion.identity);                
+        PLAYER = Instantiate(PlayerPrefab, Vector3.zero, Quaternion.identity);
+        Debug.Log("프리팹! 플레이어! 생성!");
+        PLAYER.name = PlayerPrefab.name.Replace("(Clone)", "");
         PLAYER.transform.SetParent(gameObject.transform);
     }
 }

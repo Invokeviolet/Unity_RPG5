@@ -87,7 +87,7 @@ public class ChangeSceneManager : MonoBehaviour
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
 
-        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 1f, 0);
 
         Title = false;
         Ingame = false;
@@ -103,7 +103,7 @@ public class ChangeSceneManager : MonoBehaviour
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
 
-        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0); // 플레이어 다른씬에서 움직임 막기
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 1f, 0); 
 
         Title = false;
         Ingame = false;
@@ -119,7 +119,7 @@ public class ChangeSceneManager : MonoBehaviour
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
 
-        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 1f, 0);
 
         Title = false;
         Ingame = false;
@@ -136,7 +136,7 @@ public class ChangeSceneManager : MonoBehaviour
         GameManager.INSTANCE.myPlayerInGame = false;
         GameManager.INSTANCE.myPlayerAction = true;
 
-        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 0.5f, 0);
+        Player.INSTANCE.ActionPlayerPos.transform.position = new Vector3(2000, 1f, 0);
 
         Title = false;
         Ingame = false;

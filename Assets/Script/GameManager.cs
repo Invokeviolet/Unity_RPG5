@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     Monster monster;
     public Player GetPlayer() => player;
     public Monster GetMonster() => monster;
+    public GameObject PlayerCam=null;
 
     public int POTION;
     public int GOLD;
@@ -72,12 +73,19 @@ public class GameManager : MonoBehaviour
     {
         player = FindObjectOfType<Player>();
         monster = FindObjectOfType<Monster>();
+        PlayerCam = GameObject.Find("PlayerCam");
     }
-
-
-    public void Init()
+    
+    private void Update()
     {
-
+        // 메인카메라를 켜고
+        // 플레이어 카메라는 전투씬일때만 켜기
+        if (myPlayerAction == true)
+        {
+            Camera.main.gameObject.SetActive(false);
+            PlayerCam.gameObject.SetActive(true);
+        }
+        else Camera.main.gameObject.SetActive(true);
     }
 
     /*public void BUYPOTION(string potion, string gold)
